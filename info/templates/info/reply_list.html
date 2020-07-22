@@ -1,0 +1,85 @@
+{% extends 'info_detail.html' %}
+{% block title %}댓글 리스트{% endblock %}
+{% block style %}
+<style>
+    h3 {
+        background: red;
+        color: white;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<body>
+<!-- 템플릿 언어(template language) -->
+<ul>
+        {% for reply in object_list %}
+            <li>아이디: {{reply.member_id}} <br> {{ reply.replyday }}
+               <br> {{reply.content}} <br> <a href = "{% url 'r_update' pk=reply.id  %}"class="btn btn-secondary">수정</a><a href = "{% url 'r_delete' pk=reply.id  %}" class="btn btn-info">삭제</a></li>
+
+        {% endfor %}
+
+<button type="submit" class="btn btn-primary">
+    <a href = "{% url 'r_create' %}">관람평 작성</a>
+</button>
+
+
+</ul>
+<h3>전체 게시물 수: {{paginator.count}}</h3>
+<h3>현재 게시물 페이지 번호: {{page_obj.number}}</h3>
+<h3>현재 게시물 페이지 시작번호: {{page_obj.start_index}}</h3>
+<h3>현재 게시물 페이지 끝번호: {{page_obj.end_index}}</h3>
+<h3>현재 게시물 번호 범위: {{page_obj.page_range}}</h3>
+<h3>현재 게시물 페이지 범위: {{paginator.page_range}}</h3>
+{% block pagination %}
+
+{% if is_paginated %} <!--활성화될 수 있는지 확인 -->
+<ul class="pagination justify-content-center pagination-sm">
+<!--왼쪽으로 -->
+{% if page_obj.has_previous %}
+    <li class="page-item">
+        <a class="page-link"
+           href="{% url 'r_list' %}?page={{page_obj.previous_page_number}}"
+           tabindex="-1">
+            이전
+        </a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link"
+           href="#"
+           tabindex="-1">
+            이전
+        </a>
+    </li>
+
+{% endif %}
+
+<!--가운데, 페이지 리스트 -->
+<!--for문 -->
+{% for object in page_obj.paginator.page_range %}
+    <li class="page-item {% if page_obj.number == forloop.counter %}disabled{% endif %}">
+        <a class="page-link" href="{{ request.path }}?page={{ forloop.counter }}">{{ forloop.counter }}</a>
+    </li>
+{% endfor %}
+
+<!--오른쪽으로 -->
+{% if page_obj.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="{% url 'r_list' %}?page={{ page_obj.next_page_number }}">Next</a>
+    </li>
+    {% else %}
+    <li class="page-item disabled">
+        <a class="page-link" href="#">Next</a>
+    </li>
+    {% endif %}
+
+{% endif %}
+
+{% endblock %}
+
+{% endblock %}
+    </ul>
+</body>
+</html>

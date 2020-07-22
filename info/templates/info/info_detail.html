@@ -1,0 +1,93 @@
+{% extends 'base1.html' %}
+{% block title %}영화상세{% endblock %}
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#b3").click(function () {
+                id = '{{ request.session.id }}'
+                if (id == "") {
+                    alert('로그인이 필요한 서비스입니다.')
+                    location.href = "{% url 'login' %}"
+                } else {
+                    location.href = '{% url 'reserve:time' movie_id=movie_id %}'
+                }
+            })
+            $("#b4").click(function () {
+                id = '{{ request.session.id }}'
+                if (id == "") {
+                    alert('로그인이 필요한 서비스입니다.')
+                    location.href = "{% url 'login' %}"
+                } else {
+                    location.href = '{% url 'r_create' movie_id=movie_id %}'
+                }
+            })
+        })
+    </script>
+{% endblock %}
+{% block content %}
+    <h1 align="left">영화상세</h1>
+    <hr><br>
+    <h1 style="float: left">
+        <img src='../../../static/image/{{ title }}.jpg'></h1>
+    <div align="left">
+        <h3>{{ title }}</h3><br>
+        <h7>예매율: {{ counting }}</h7>
+        <br>
+        <hr>
+        <h9>감독: {{ director }} / 배우: {{ actor }}</h9>
+        <br>
+        <h9>장르: {{ genre }} / 기본: {{ agecut }} , {{ runningtime }}</h9>
+        <br>
+        <h9>개봉: {{ openday }}</h9>
+        <br><br><br><br>
+        <button type="button" style="float: right" class="btn btn-primary" id="b3">영화 예매
+        </button>
+    </div><br><br><br>
+    <h6 align="left">{{ movie_content }}</h6>
+    <br>
+    <h3>{{ title }}의 관람평</h3><br><br>
+
+    {% for x in reply %}
+        <table class="table-info" style="width: 800px">
+        <tr style="border-bottom: 1px solid navy; border-top: 1px solid navy">
+            <td align="left">{{ x.member_id_id }} {{ x.replyday }}<br><br>{{ x.content }}<br><br>
+                {% if x.member_id_id == request.session.id %}
+                <button type="button" class="btn btn-primary b1" id="{{ x.content }}" name="{{ x.id }}">수정</button>
+                <button type="button" class="btn btn-primary b2" id="b2" name="{{ x.id }}">삭제</button>
+                <br>
+            {% endif %}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+    <button type="submit" style="float: right" class="btn btn-primary" id="b4">관람평 작성
+    </button>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.b1').click(function () {
+                reply_idVal = $(this).attr("name")
+                movie_idVal = {{ movie_id }}
+                contentVal = $(this).attr("id")
+                location.href = '/replyupdate/' + reply_idVal + '/' + movie_idVal + '/' + contentVal
+            })
+            $('.b2').click(function () {
+                reply_idVal = $(this).attr("name")
+                $.ajax({
+                    type: 'POST',
+                    url: '{% url 'r_delete' %}',
+                    data: {
+                        "reply_id": reply_idVal,
+                        "movie_id": {{ movie_id }},
+                        'csrfmiddlewaretoken': '{{ csrf_token }}'
+                    },
+                    success: function () {
+                        location.href = "{% url 'i_detail' movie_id=movie_id %}"
+                    }
+                })
+            })
+        })
+    </script>
+{% endblock %}

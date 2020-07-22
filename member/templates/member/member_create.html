@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}빅메가박스{% endblock %}
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        $('#name').focus(function () {
+            $(this).css('color',"black")
+        })
+        $('#birth').focus(function () {
+            $(this).css('color',"black")
+        })
+        $('#tel').focus(function () {
+            $(this).css('color',"black")
+        })
+        $('#b1').click(function(){
+            var nameVal=$('#name').val()
+            var birthVal=$('#birth').val()
+            var telVal = $('#tel').val()
+
+            if (nameVal==''||nameVal=='이름을 입력해주세요.'){
+                alert("이름을 입력해주세요.")
+                return false
+            }else{
+                if(birthVal==''||birthVal=='법정생년월일 6자리를 입력해주세요.'){
+                    alert("생년월일을 입력해주세요.")
+                    return false
+                }else{
+                    if(birthVal.length!=6){
+                        alert("생년월일 '6자리'를 입력해 주세요")
+                        return false
+                    }else{
+                        if(telVal==''||telVal=='휴대전화번호를 입력해주세요.('-'제외)'){
+                            alert("전화번호를 입력해 주세요.")
+                            return false
+                        }else{
+                            if(!(telVal.length==10||telVal.length==11)){
+                                alert("휴대전화번호를 입력해주세요.('-'제외)")
+                                return false
+                            }else{
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    })
+    function enterkey(){ //엔터 치면 확인버튼 눌림
+        if (window.event.keyCode == 13) {
+             $('#b1').click()
+        }
+    }
+    </script>
+{% endblock %}
+{% block content %}
+<h1>회원가입</h1>
+    <img src="../../static/confirm1.png">
+<hr color="blue">
+    <div>
+    <form action="{% url 'create_check' %}" method="post">
+        {% csrf_token %}
+<table style="margin-left:20px;width: 800px">
+    <tr>
+        <td style="text-align: left" rowspan="4"><h4>가입 여부 확인</h4><font color="#ff4500">※ 기존 회원가입 정보와 일치하는 정보를 입력하셔야<br> 회원가입 여부를 정확하게 확인하실 수 있습니다. 입<br>력하신 정보는 회원가입 여부에만 사용되며 저장되지<br> 않습니다.</font></td>
+        <td height="40px"><input onkeyup="enterkey()" type="text" style="width: 320px;color: dimgray" id="name" name="name" value="이름을 입력해주세요." onfocus="this.value=''"></td>
+    </tr>
+    <tr>
+        <td height="40px"><input onkeyup="enterkey()" type="text" style="width: 320px;color: dimgray" id="birth" name="birth" value="법정생년월일 6자리를 입력해주세요." onfocus="this.value=''"></td>
+    </tr>
+    <tr>
+        <td height="40px"><input onkeyup="enterkey()" type="text" style="width: 320px;color: dimgray" id="tel" name="tel" value="휴대전화번호를 입력해주세요.('-'제외)" onfocus="this.value=''"></td>
+    </tr>
+    <tr>
+        <td><input type="submit" id="b1" class="btn btn-primary" value="가입여부 확인" style="width: 320px"></td>
+    </tr>
+</table>
+    </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}빅메가박스{% endblock %}
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        $('#b2').click(function(){ //아이디 중복확인 처리
+            var idVal=$('#id').val()
+            if(!(idVal.length>=8&&idVal.length<=12)){
+                alert('아이디를 8자리 이상 12자리 이하로 작성해주세요.')
+            }else{
+                $.ajax({
+                url:'{% url 'id_check' %}',
+                type:'POST',
+                data:{
+                    'id':idVal,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function(result) {
+                    if(result==1){
+                        alert('중복된 아이디 있음')
+                        $('#b2').attr('class','btn btn-secondary')
+                        return false
+                    }else{
+                        alert('아이디 사용 가능')
+                        $('#b2').attr('class','btn btn-primary')
+                        return false
+                    }
+                }
+            })
+            }
+
+        })
+        $('#b1').click(function () { // 회원가입 처리
+            var idVal=$('#id').val()
+            var pwVal=$('#pw').val()
+            var pw_confirmVal=$('#pw_confirm').val()
+            var emailVal=$('#email').val()
+            var genderVal1=document.getElementsByName('gender');
+            var bCheck=false
+            var genderVal2
+            for(var i=0;i<genderVal1.length;i++){
+                if(genderVal1[i].checked==true){
+                     genderVal2 = genderVal1[i].value;
+                    bCheck = true;
+                }
+            }
+            var addVal=$('#add').val()
+
+            if(idVal==''||!(idVal.length>=8&&idVal.length<=12)||pw==''||!(pwVal.length>=10&&pwVal.length<=16)||pw_confirmVal==''||!(pwVal==pw_confirmVal)||!(pw_confirmVal.length>=10&&pw_confirmVal.length<=16)||emailVal==''||bCheck==false||addVal==''){
+                alert('필수 항목을 작성하지 않거나 잘못 작성하셨습니다.')
+                return false
+            }else{
+                alert('회원 가입 완료.')
+                return true
+            }
+        })
+        $('#id').keyup(function () {  //아이디 글자수 확인 처리
+            var idVal2=$('#id').val()
+            if(!(idVal2.length>=8&&idVal2.length<=12)){
+                $('#id_check').html('<font size="2" color="red">&nbsp&nbsp&nbsp아이디는 8자리 이상 12자리 이하 입니다.</font>')
+            }else{
+                $('#id_check').text('')
+            }
+        })
+        $('#pw').keyup(function () {  //비밀번호 글자수 확인 처리
+            var pwVal2=$('#pw').val()
+            if(!(pwVal2.length>=10&&pwVal2.length<=16)){
+                $('#pw_check').html('<font size="2" color="red">&nbsp&nbsp&nbsp비밀번호는 10자리 이상 16자리 이하 입니다.</font>')
+            }else{
+                $('#pw_check').text('')
+            }
+        })
+    })
+    function enterkey(){ //엔터 치면 확인버튼 눌림
+        if (window.event.keyCode == 13) {
+             $('#b1').click()
+        }
+    }
+    function tabkey(){ //비밀번호 확인란 넘어 갈 시 비밀번호가 다르면 경고 띄움
+        var pwVal=$('#pw').val()
+        var pw_confirmVal=$('#pw_confirm').val()
+        if(pwVal!=pw_confirmVal){
+                $('#pw_check2').html('<font size="2" color="red">&nbsp&nbsp&nbsp비밀번호가 다릅니다.</font>')
+            }else{
+                $('#pw_check2').html('<font size="2" color="blue">&nbsp&nbsp&nbsp비밀번호가 일치합니다.</font>')
+            }
+    }
+    </script>
+{% endblock %}
+{% block content %}
+<h1>회원가입</h1>
+    <img src="../../static/confirm3.png">
+<hr color="blue">
+    <div>
+    <h4>{{ name }}님 안녕하세요.</h4>
+    <h6>회원 정보를 입력해주세요.</h6>
+<form action="{% url 'create_fin' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="name" value="{{ name }}">
+    <input type="hidden" name="birth" value="{{ birth }}">
+    <input type="hidden" name="tel" value="{{ tel }}">
+<table style="margin-left: 150px">
+    <tr style="border-top: 1px solid black">
+        <td bgcolor="#f0f8ff" width="140" height="50">생년월일</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp{{ birth1 }}년 {{ birth2 }}월 {{ birth3 }}일</td>
+    </tr>
+    <tr style="border-top: 1px solid lightgray">
+        <td bgcolor="#f0f8ff" height="50">휴대폰 번호</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp{{ tel1 }}-{{ tel2 }}-{{ tel3 }}</td>
+    </tr>
+    <tr style="border-top: 1px solid lightgray">
+        <td bgcolor="#f0f8ff" height="50">아이디</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp<input type="text" id="id" name="id">&nbsp&nbsp&nbsp<button type="button" class="btn btn-secondary" id="b2">중복확인</button><br><div id="id_check"></div></td>
+    </tr>
+    <tr style="border-top: 1px solid lightgray">
+        <td bgcolor="#f0f8ff" height="50">비밀번호</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp<input type="password" name="pw" id="pw"><br><div id="pw_check"></div></td>
+    </tr>
+    <tr style="border-top: 1px solid lightgray">
+        <td bgcolor="#f0f8ff" height="50">비밀번호 확인</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp<input onfocusout="tabkey()" type="password" id="pw_confirm"><br><div id="pw_check2"></div></td>
+    </tr>
+    <tr style="border-top: 1px solid lightgray">
+        <td bgcolor="#f0f8ff" height="50">이메일 주소</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp<input type="text" id="email" name="email"></td>
+    </tr>
+    <tr style="border-top: 1px solid lightgray;border-bottom: 1px solid lightgray">
+        <td bgcolor="#f0f8ff" height="50">성별</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp남&nbsp&nbsp<input type="radio" id="gender" name="gender" value="남">&nbsp&nbsp&nbsp여&nbsp&nbsp<input type="radio" id="gender" name="gender" value="여"></td>
+    </tr>
+    <tr style="border-top: 1px solid lightgray">
+        <td bgcolor="#f0f8ff" height="50">주소</td>
+        <td style="text-align: left;">&nbsp&nbsp&nbsp<input type="text" id="add" name="add"></td>
+    </tr>
+</table>
+    <br>
+    <input type="submit" id='b1' value="회원가입"  class="btn btn-primary">
+</form>
+    </div>
+{% endblock %}

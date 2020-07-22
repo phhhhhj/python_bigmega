@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}빅메가박스{% endblock %}
+
+{% block content %}
+<h1>회원가입</h1>
+    <img src="../../static/confirm1.png">
+<hr color="blue">
+    <div>
+    <form action="{% url 'create2' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="name" value="{{ name }}">
+        <input type="hidden" name="birth" value="{{ birth }}">
+        <input type="hidden" name="tel" value="{{ tel }}">
+        <br><br>
+        <h2><font style="color: orangered">{{ name }}</font>님 안녕하세요!</h2><br>
+        <h6>회원가입 절차를 진행합니다.</h6><br><br>
+        <input type="submit" value="회원 가입 진행" class="btn btn-primary">
+    </form>
+    </div>
+{% endblock %}

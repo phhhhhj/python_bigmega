@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}빅메가박스{% endblock %}
+
+{% block content %}
+<h1>아이디 찾기</h1>
+<hr color="blue">
+    <div>
+    {% if id == '' %}
+        <img src="../../static/NOPROFILE.jpg" width="150px" height="150px">
+        <br><br>
+        <h2><font style="color: dodgerblue">{{ name }}</font> 회원님으로 검색되는 아이디가 없습니다.</h2>
+        <br>
+        <a href="{% url 'member_find_id' %}" class="btn btn-success">아이디 찾기 화면으로</a>&nbsp&nbsp&nbsp&nbsp<a href="{% url 'i_list' %}" class="btn btn-info">메인으로</a>
+    {% else %}
+        <img src="../../static/profile.png">
+        <br><br>
+        <h2><font style="color: dodgerblue">{{ name }}</font> 회원님의 아이디는 <font style="color: orangered">{{ id }}</font>입니다!</h2>
+        <br>
+        <a href="{% url 'member_find_pw' %}" class="btn btn-success">비밀번호 찾기 화면으로</a>&nbsp&nbsp&nbsp&nbsp<a href="{% url 'login' %}" class="btn btn-info">로그인 화면으로</a>
+    {% endif %}
+
+    </div>
+{% endblock %}

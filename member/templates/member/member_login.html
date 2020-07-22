@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}빅메가박스{% endblock %}
+{% block script %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function () {
+        $('#id').focus(function () {
+            $(this).css('color',"black")
+        })
+        $('#pw').focus(function () {
+            $(this).css('color',"black")
+            $(this).attr('type','password')
+        })
+        $('#b1').click(function () { //로그인 처리
+            idVal=$('#id').val()
+            pwVal=$('#pw').val()
+            $.ajax({
+                url:'{% url 'login_check' %}',
+                type:'POST',
+                data:{
+                    'id':idVal,
+                    'pw':pwVal,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success:function(result) {
+                    if(result==0){
+                        alert("아이디 틀림")
+                        location.reload()
+                    }else if(result==1){
+                        alert("비밀번호 틀림")
+                        location.reload()
+                    }else if(result==2){
+                        alert("로그인 성공!")
+                        location.href="{% url 'i_list' %}"
+                    }
+                }
+            })
+        })
+        $('#pw').keyup(function () {  //로그인 버튼 활성화
+            idVal=$('#id').val()
+            pwVal=$('#pw').val()
+            if((idVal.length>=8&&idVal.length<=12)&&(pwVal.length>=10&&pwVal.length<=16)){
+                $('#b1').attr('class','btn btn-primary')
+            }else{
+                $('#b1').attr('class','btn btn-secondary')
+            }
+        })
+    })
+    function enterkey(){ //엔터 치면 확인버튼 눌림
+        if (window.event.keyCode == 13) {
+             $('#b1').click()
+        }
+    }
+    </script>
+{% endblock %}
+{% block content %}
+<h1>로그인</h1>
+<hr color="blue">
+    <br>
+    <h6><font color="#808080">아이디 비밀번호를 입력하신 후, 로그인 버튼을 클릭해 주세요.</font></h6>
+    <div>
+<table style="width: 800px">
+    <tr>
+        <td><br><input type="text" style="width: 320px;height:40px;color: dimgray" value="아이디를 입력해주세요." id="id" name="id" onfocus="this.value=''"></td>
+    </tr>
+    <tr>
+        <td><br><input type="text" style="width: 320px;height:40px;color: dimgray" onkeyup="enterkey()" value="비밀번호를 입력해주세요." id="pw" name="pw" onfocus="this.value=''"></td>
+    </tr>
+    <tr>
+        <td><br><button id="b1" style="width: 320px;" type="button" class="btn btn-secondary">로그인</button></td>
+    </tr>
+    <tr>
+        <td style="color: #6F6F6F"><br><a href="{% url "member_find" %}">ID/PW 찾기</a>&nbsp&nbsp&nbsp|&nbsp&nbsp&nbsp<a href="{% url 'create' %}">회원가입</a></td>
+    </tr>
+</table>
+    </div>
+{% endblock %}

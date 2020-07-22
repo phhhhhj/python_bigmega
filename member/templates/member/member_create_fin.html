@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}빅메가박스{% endblock %}
+{% block content %}
+<h1>회원가입</h1>
+    <img src="../../static/confirm4.png">
+<hr color="blue">
+    <div>
+    <img src="../../static/success.png"><br><br>
+    <h4 style="color: purple">{{ name }}님 빅메가박스 가입을 환영합니다.</h4><br>
+    <h6>이제부터 빅메가박스에서 제공하는 다양한 멤버십 혜택을 이용하실 수 있습니다.</h6><br><br><br>
+    <a href="{% url 'i_list' %}" class="btn btn-primary">메인으로 이동</a>
+    </div>
+{% endblock %}
