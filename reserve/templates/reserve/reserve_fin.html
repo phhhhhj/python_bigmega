@@ -1,0 +1,76 @@
+{% extends 'base2.html' %}
+
+{% block title %}예매 확인{% endblock %}
+{% block style %}
+    <style>
+        #go_main {
+            background-color: #2056ac;
+            color: white;
+            width: 200px;
+            height: 50px;
+            font-size: 20px;
+            border: none;
+        }
+
+        #detail_info {
+            width: 500px;
+            margin: 0 auto;
+            font-size: 20px;
+            {% comment %}border-collapse: collapse;{% endcomment %}
+            border: 1px solid navy;
+        }
+
+        .row1 {
+            height: 50px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>예매 내역</h1>
+    <hr width="60%" color="red">
+    <br>
+    <h2>< {{ title }} ></h2>
+    <br>
+    <table id="detail_info">
+        <tr class="row1">
+            <td width="30%">관람일</td>
+            <td width="70%">{{ reserve_info.0.watchday }}</td>
+        </tr>
+        <tr class="row1">
+            <td>관람 회차</td>
+            <td>{{ reserve_info.0.watchtime }}회차
+                {% if reserve_info.0.watchtime == 1 %}
+                    (시작시간 07:00)
+                {% elif reserve_info.0.watchtime == 2 %}
+                    (시작시간 10:00)
+                {% elif reserve_info.0.watchtime == 3 %}
+                    (시작시간 13:00)
+                {% elif reserve_info.0.watchtime == 4 %}
+                    (시작시간 16:00)
+                {% elif reserve_info.0.watchtime == 5 %}
+                    (시작시간 19:00)
+                {% else %}
+                    (시작시간 22:00)
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="row1">
+            <td>상영관</td>
+            <td>{{ reserve_info.0.theater }}관</td>
+        </tr>
+        <tr class="row1">
+            <td>관람인원</td>
+            <td>{{ reserve_info.0.person }}명</td>
+        </tr>
+        <tr class="row1">
+            <td>좌석번호</td>
+            <td>{{ reserve_info.0.seat }}</td>
+        </tr>
+        <tr class="row1">
+            <td>예매시간</td>
+            <td>{{ reserve_info.0.bookingday | date:'Y-m-d H:i' }}</td>
+        </tr>
+    </table>
+    <br>
+    <button id="go_main" onclick="location.href='{% url "i_list" %}'">메인페이지로</button>
+{% endblock %}

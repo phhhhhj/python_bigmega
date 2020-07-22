@@ -1,0 +1,61 @@
+{% extends 'base2.html' %}
+
+{% block title %}날짜/회차 선택{% endblock %}
+{% block style %}
+    <style>
+        td {
+            border: 1px solid navy;
+        }
+
+        span {
+            color: midnightblue;
+            line-height: 50px;
+            font-size: 30px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        a:hover {
+            font-weight: bold;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <h1>상영시간표</h1>
+    <table style="width: 500px; margin: 20px auto; border-collapse: collapse; font-size: 20px;">
+        <tr>
+            <td>회차</td>
+            <td>1</td>
+            <td>2</td>
+            <td>3</td>
+            <td>4</td>
+            <td>5</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td>시작시간</td>
+            <td>07:00</td>
+            <td>10:00</td>
+            <td>13:00</td>
+            <td>16:00</td>
+            <td>19:00</td>
+            <td>22:00</td>
+        </tr>
+    </table>
+    <br>
+    <hr width="60%" color="red">
+    <br>
+    <h2>{{ title }} - 관람일/회차 선택</h2>
+    <br>
+    <hr width="30%">
+    <br>
+    {% for time in timetable %}
+        <span>[ <a
+                href="{% url 'reserve:seat' watchday=time.watchday watchtime=time.watchtime theater=time.theater %}">
+            {{ time.theater }}관
+            {{ time.watchday }}
+            {{ time.watchtime }}회차</a> ]</span><br>
+    {% endfor %}
+{% endblock %}

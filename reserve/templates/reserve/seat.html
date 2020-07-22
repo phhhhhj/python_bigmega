@@ -1,0 +1,122 @@
+{% extends 'base2.html' %}
+
+{% block title %}좌석 선택{% endblock %}
+{% block style %}
+    <style>
+        .con {
+            width: 25px;
+        }
+
+        .con_text {
+            text-align: left;
+            font-size: 20px;
+            font-weight: bold;
+            color: black;
+            padding-left: 10px;
+            padding-right: 30px;
+        }
+
+        #next {
+            margin: 70px auto;
+            padding: 10px;
+            width: 200px;
+            background-color: #48ecea;
+            color: navy;
+            font-size: 20px;
+            font-weight: bold;
+            border: 1px solid navy;
+        }
+
+        .seat_btn {
+            background-color: blue;
+            width: 60px;
+            height: 60px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        #screen {
+            margin: 0 auto;
+            padding: 10px 0;
+            display: block;
+            width: 700px;
+            background-color: midnightblue;
+            color: whitesmoke;
+            font-size: 30px;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".seat_btn").click(function () {
+                // 좌석 버튼 클릭시 빨간색으로 버튼 색 변경
+                color = $(this).css('background-color')
+                if (color == 'rgb(0, 0, 255)') {
+                    $(this).css('background-color', 'red')
+                    $(this).addClass('red')
+                } else { // 빨간색 좌석 선택시 선택 취소 -> 다시 파란색으로
+                    $(this).css('background-color', 'blue')
+                    $(this).removeClass('red')
+                }
+            }) // 좌석 버튼 클릭
+
+            $("#next").click(function () {
+                count = $("button").length - 1 // 좌석 버튼의 개수
+                select_seat = [] // 선택된 좌석의 id 담아놓을 배열
+                for (i = 0; i < count; i++) {
+                    btn = $("#" + i)
+                    id = $("#" + i).attr('id')
+                    if (btn.hasClass('red')) { // 선택된(빨간색) 좌석의 id를 배열에 push
+                        select_seat.push(id)
+                    }
+                } // for
+                if (select_seat.length == 0) {
+                    alert("좌석을 선택해 주세요.")
+                } else {
+                    alert(select_seat.length + "개의 좌석을 선택하셨습니다.")
+                    $.ajax({
+                        type: 'POST',
+                        url: "{% url 'reserve:save' %}",
+                        data: {
+                            'select_seat[]': select_seat,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        success: function (result) {
+                            if (result != null) {
+                                location.href = "{% url 'reserve:fin' insert_id='result' %}".replace('result', result)
+                            }
+                        }
+                    }) // ajax
+                }
+            }) // 좌석 선택 완료 버튼 클릭
+        }) // main
+    </script>
+{% endblock %}
+{% block content %}
+    <table style="margin: 0 auto">
+        <tr>
+            <td class="con" style="background-color: red;"></td>
+            <td class="con_text">: 선택된 좌석</td>
+            <td class="con" style="background-color: blue;"></td>
+            <td class="con_text">: 예매 가능</td>
+            <td class="con" style="background-color: gray;"></td>
+            <td class="con_text">: 예매 불가</td>
+        </tr>
+    </table>
+    <br><br>
+    <label id="screen">SCREEN</label>
+    <br><br>
+    {% for key, value in seat.items %}
+        {% if value == '0' %}
+            <button class="seat_btn" id="{{ key }}">{{ forloop.counter }}</button>
+        {% else %}
+            <button style="background-color: gray;" class="seat_btn" id="{{ key }}"
+                    disabled="disabled">{{ forloop.counter }}</button>
+        {% endif %}
+    {% endfor %}
+    <br>
+    <button id="next">좌석 선택 완료</button>
+{% endblock %}

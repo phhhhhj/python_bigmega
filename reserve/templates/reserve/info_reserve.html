@@ -1,0 +1,66 @@
+{% extends 'base2.html' %}
+
+{% block title %}빠른 예매{% endblock %}
+{% block style %}
+    <style>
+        #top5 {
+            font-size: 20px;
+            line-height: 30px;
+        }
+
+        #list {
+            overflow: scroll;
+            font-size: 20px;
+            line-height: 40px;
+            margin: 0 auto;
+            padding: 10px 0px;
+            width: 400px;
+            height: 300px;
+            background-color: #daf8ff;
+        }
+
+        a {
+            line-height: 30px;
+            color: midnightblue;
+            text-decoration: none;
+        }
+
+        a:hover {
+            font-weight: bold;
+        }
+
+        .movie_li:nth-child(even) {
+            background-color: #eeeeee;
+        }
+    </style>
+{% endblock %}
+{% block script %}
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url: "{% url 'reserve:hot' %}",
+                success: function (result) {
+                    $("#top5").append(result)
+                }
+            })
+        })
+    </script>
+{% endblock %}
+{% block content %}
+    <h1>무비차트 TOP5</h1>
+    <br>
+    <div id="top5"></div>
+    <br>
+    <hr width="40%" color="red">
+    <br>
+    <h1>영화 선택</h1>
+    <br>
+    <div id="list">
+        <ul>
+            {% for movie in object_list %}
+                <li class="movie_li"><a href="{% url 'reserve:time' movie_id=movie.id %}">{{ movie.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
